@@ -1,0 +1,46 @@
+JavaStream introduced in java8 to process collections in functional style (lambda)
+JavaStream used for filtering,mapping and reducing data
+JavaStream Works with collection objects as map,list,set
+
+Functional interface
+contains exactly one abstract method and used for lambda expressions
+
+Java Functional Interfaces (Simple Comparison)
+
+Interface	        Takes (Input)	   Returns (Output)	     What It Does    	Example
+
+Predicate<T>        One value	       boolean     	        Checks a condition	 Is age > 18?
+Function<T,R>	    One value	       New value	        Changes data	     Name → Length
+Consumer<T>	        One value	       Nothing	            Uses data	         Print name
+Supplier<T>	        Nothing	           One value            Gives data	         Random number
+
+
+✅ Java Stream Operations Table
+
+Stream Operation	Functional Interface	What It Does
+
+Java Stream Operations Table (Complete)
+Operation	Functional Interface	What It Does
+filter()	Predicate<T>	Filters elements by condition
+map()	Function<T, R>	Transforms elements
+forEach()	Consumer<T>	Performs action on elements
+sorted()	Comparator<T>	Sorts elements
+distinct()	—	Removes duplicate elements
+limit()	—	Limits number of elements
+skip()	—	Skips elements
+count()	—	Counts elements
+anyMatch()	Predicate<T>	Checks if any element matches
+allMatch()	Predicate<T>	Checks if all elements match
+noneMatch()	Predicate<T>	Checks if no element matches
+findFirst()	—	Gets first element
+findAny()	—	Gets any element
+collect()	Collector	Converts stream to collection
+reduce()	BinaryOperator<T>	Combines elements
+groupingBy()	Function<T, K>	Groups elements
+partitioningBy()	Predicate<T>	Splits into two groups (true / false)
+flatMap()	Function<T, Stream<R>>	Flattens nested streams
+mapToInt()	ToIntFunction<T>	Converts to IntStream
+mapToDouble()	ToDoubleFunction<T>	Converts to DoubleStream
+average()	—	Calculates average
+max()	Comparator<T>	Finds maximum
+min()	Comparator<T>	Finds minimum
