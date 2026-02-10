@@ -17,7 +17,7 @@ public class NumericStreams {
     public void FindMaxAndMin(){
         int max=numbers.stream().max(Integer::compare).get();
         int min=numbers.stream().min(Integer::compare).get();
-        System.out.println(max+min);
+        System.out.println("Max is"+max+"----"+"Min is"+min);
     }
 
     public void CalculateAverage(){
@@ -29,7 +29,7 @@ public class NumericStreams {
 
 
     public void MultiplyAllIntegers(){
-        long res=numbers.stream().reduce(1,(a, b) -> a * b);
+        long res=numbers.stream().filter(x->x>0).reduce(1,(a, b) -> a * b);
         System.out.println(res);
     }
 
