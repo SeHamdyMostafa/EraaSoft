@@ -9,16 +9,20 @@ public class WalletController {
 
     private WalletService walletService = new WalletService();
     private TransactionService transactionService = new TransactionService();
+    // TODO initialize this object.
     private Scanner sc;
 
+    // TODO there is no need to pass the scanner as an input, remove this constructor.
     public WalletController(Scanner sc) {
         this.sc = sc;
     }
 
+    // TODO we need to split the validation logic from the method + change the parameter type and name.
     private double readValidAmount(String message) {
         double amount;
         while (true) {
             System.out.print(message);
+            // TODO we need to use try catch for InputMismatchException.
             amount = sc.nextDouble();
             sc.nextLine();
             if (amount > 0) {
@@ -45,7 +49,7 @@ public class WalletController {
             sc.nextLine();
 
             switch (choice) {
-
+            // TODO kindly not be lazy and use separated functions and also modern switch case.
                 case 1:
                     System.out.println("Balance: " + walletService.getBalance());
                     break;
