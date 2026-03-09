@@ -1,64 +1,58 @@
 package org.example.Controller;
 
 import org.example.Service.AuthService;
-import java.util.Scanner;
 
 public class AuthController {
     private AuthService authService = new AuthService();
-    private Scanner sc;
+    private ValidationUtil validationUtil = new ValidationUtil();
 
-    public AuthController(Scanner sc){
-        this.sc = sc;
-    }
+    // ===== REGISTER =====
+    public void handleRegister() {
+        while (true) {
+            String name = validationUtil.validateUsername();
+            String phone = validationUtil.validatePhone();
+            String password = validationUtil.validatePassword("Enter Your Password");
+            boolean registered = authService.register(name, phone, password);
+            if (registered) {
+                break;
+            } else {
+                System.out.println("Please try registering again .");
 
-    private boolean isValidPhone(String phone){
-        return phone.matches("\\d{11}");
-    }
-
-    private boolean isValidPassword(String password){
-        return password.length() >= 8;
-    }
-
-    public void handleRegister(){
-
-        System.out.print("Name: ");
-        String name = sc.nextLine();
-
-        String phone;
-        while(true){
-            System.out.print("Phone (11 digits): ");
-            phone = sc.nextLine();
-            if(isValidPhone(phone)) break;
-            System.out.println("Invalid phone. Must be 11 digits!");
-        }
-
-        String password;
-        while(true){
-            System.out.print("Password (min 8 chars): ");
-            password = sc.nextLine();
-            if(isValidPassword(password)) break;
-            System.out.println("Password too short!");
-        }
-
-        if(authService.register(name, phone, password)){
-            System.out.println("Registered successfully!");
-        }else{
-            System.out.println("Phone already used!");
+            }
         }
     }
 
-    public boolean handleLogin(){
-        while(true){
-            System.out.print("Phone: ");
-            String phone = sc.nextLine();
-            System.out.print("Password: ");
-            String password = sc.nextLine();
+    // ===== LOGIN =====
+    public boolean handleLogin() {
+        final int MAX_ATTEMPTS = 4;
+        int attempts = 0;
 
-            if(authService.login(phone,password)){
+        while (attempts < MAX_ATTEMPTS) {
+            String phone = validationUtil.validatePhone();
+            String password = validationUtil.validatePassword("Enter Your Password");
+
+            if (authService.login(phone, password)) {
                 System.out.println("Login successful!");
                 return true;
-            }else{
-                System.out.println("Invalid phone or password!");
+            } else {
+                System.out.println("Incorrect phone or password!");
+                attempts++;
+            }
+        }
+
+        System.out.println("Maximum login attempts reached. Please try later.");
+        return false;
+    }
+
+    // ===== CHANGE PASSWORD =====
+    public void handleChangePassword() {
+        while (true){
+            String oldPassword = validationUtil.validatePassword("Enter Old Password: ");
+            String newPassword = validationUtil.validatePassword("Enter New Password: ");
+            if (authService.changePassword(oldPassword, newPassword)) {
+                break;
+            } else {
+                System.out.println("Please try again.\n");
             }
         }
     }

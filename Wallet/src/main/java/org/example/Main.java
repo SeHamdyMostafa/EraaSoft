@@ -10,9 +10,8 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-
-        AuthController authController = new AuthController(sc);
-        WalletController walletController = new WalletController(sc);
+        AuthController authController = new AuthController();
+        WalletController walletController = new WalletController();
 
         while(true){
 
@@ -21,17 +20,33 @@ public class Main {
             System.out.println("2. Login");
             System.out.println("3. Exit");
 
-            System.out.print("Choose: ");
-            int choice = sc.nextInt();
-            sc.nextLine();
+            int choice = -1;
+
+            while (true) {
+                System.out.print("Choose (1-3): ");
+                try {
+                    choice = Integer.parseInt(sc.nextLine());
+
+                    if (choice >= 1 && choice <= 3) {
+                        break; // رقم صحيح وفي الحدود
+                    } else {
+                        System.out.println("Invalid choice! Please enter a number between 1 and 3.");
+                    }
+
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input! Please enter a number.");
+                }
+            }
 
             switch (choice){
 
                 case 1:
+                    System.out.println("Register");
                     authController.handleRegister();
                     break;
 
                 case 2:
+                    System.out.println("Login");
                     if(authController.handleLogin()){
                         walletController.walletMenu();
                     }

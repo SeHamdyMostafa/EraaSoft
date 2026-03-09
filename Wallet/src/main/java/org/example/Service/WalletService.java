@@ -5,59 +5,85 @@ import org.example.Storage.DataStore;
 
 public class WalletService {
 
+    private DataStore dataStore = DataStore.getInstance();
     private TransactionService transactionService = new TransactionService();
 
+    // =================== GET BALANCE ===================
     public double getBalance() {
-        return DataStore.currentUser.getWallet().getBalance();
+        return dataStore.getCurrentUser().get().getWallet().getBalance();
     }
 
-    public boolean deposit(double amount) {
-        if (amount <= 0) {
-            return false;
-        }
-        DataStore.currentUser.getWallet().deposit(amount);
-        transactionService.addTransaction("Deposit", amount, DataStore.currentUser.getPhone(), ""
+    // =================== DEPOSIT ===================
+    public void deposit(double amount) {
+        dataStore.getCurrentUser().get().getWallet().deposit(amount);
+        transactionService.addTransaction(
+                "Deposit",
+                amount,
+                dataStore.getCurrentUser().get().getPhone(),
+                ""
         );
-        return true;
     }
 
+    // =================== WITHDRAW ===================
     public boolean withdraw(double amount) {
-        if (amount <= 0) {
+        boolean success = dataStore.getCurrentUser().get().getWallet().withdraw(amount);
+
+        if (amount > dataStore.getCurrentUser().get().getWallet().getBalance()) {
+            System.out.println("Insufficient balance");
             return false;
         }
-        boolean success = DataStore.currentUser.getWallet().withdraw(amount);
+
         if (success) {
-            transactionService.addTransaction("Withdraw", amount, DataStore.currentUser.getPhone(), ""
+            transactionService.addTransaction(
+                    "Withdraw",
+                    amount,
+                    dataStore.getCurrentUser().get().getPhone(),
+                    ""
             );
         }
         return success;
     }
 
+    // =================== TRANSFER ===================
     public boolean transfer(String receiverPhone, double amount) {
-        if (amount <= 0) {
-            return false;
-        }
-        if (receiverPhone.equals(DataStore.currentUser.getPhone())) {
+        String currentPhone = dataStore.getCurrentUser().get().getPhone();
+
+        if (receiverPhone.equals(currentPhone)) {
             System.out.println("You cannot transfer to yourself!");
             return false;
         }
 
-        User receiver = null;
-        for (User user : DataStore.users) {
-            if (user.getPhone().equals(receiverPhone)) {
-                receiver = user;
-                break;
-            }
-        }
+        User receiver = dataStore.getUsers()
+                .stream()
+                .filter(u -> u.getPhone().equals(receiverPhone))
+                .findFirst()
+                .orElse(null);
+
+
         if (receiver == null) {
             System.out.println("Receiver not found!");
             return false;
         }
-        boolean success = DataStore.currentUser.getWallet().transfer(receiver.getWallet(), amount);
+
+        if (amount > dataStore.getCurrentUser().get().getWallet().getBalance()) {
+            System.out.println("Insufficient balance");
+            return false;
+        }
+
+        boolean success = dataStore.getCurrentUser()
+                .get()
+                .getWallet()
+                .transfer(receiver.getWallet(), amount);
+
         if (success) {
-            transactionService.addTransaction("Transfer", amount, DataStore.currentUser.getPhone(), receiverPhone
+            transactionService.addTransaction(
+                    "Transfer",
+                    amount,
+                    currentPhone,
+                    receiverPhone
             );
         }
+
         return success;
     }
 }

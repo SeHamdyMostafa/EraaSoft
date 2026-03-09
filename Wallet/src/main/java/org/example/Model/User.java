@@ -3,8 +3,8 @@ package org.example.Model;
 public class User {
 
     private String Name;
-    private String  Phone;
-    private String  Password;
+    private String Phone;
+    private String Password;
     private Wallet wallet;
 
     public Wallet getWallet() {
