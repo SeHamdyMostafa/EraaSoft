@@ -66,6 +66,26 @@ public class ValidationUtil {
         }
     }
 
+    public int validateAge() {
+
+        while (true) {
+            try {
+                System.out.print("Enter Your Age: ");
+                int age = sc.nextInt();
+                sc.nextLine();
+                if (age <= 18) {
+                    System.out.println("Age must be at least 18.");
+                    continue;
+                }
+                return age;
+
+            } catch (Exception e) {
+                System.out.println("Invalid input! Please enter a number.");
+                sc.nextLine();
+            }
+        }
+    }
+
     // ===== AMOUNT VALIDATION =====
     public double validateAmount(String message) {
         double amount;

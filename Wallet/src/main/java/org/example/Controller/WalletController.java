@@ -1,5 +1,6 @@
 package org.example.Controller;
 
+import org.example.Service.AuthService;
 import org.example.Service.WalletService;
 import org.example.Service.TransactionService;
 
@@ -7,6 +8,7 @@ import java.util.Scanner;
 
 public class WalletController {
     private WalletService walletService = new WalletService();
+    private AuthService authService=new AuthService();
     private TransactionService transactionService = new TransactionService();
     private AuthController authController = new AuthController();
     private ValidationUtil validationUtil = new ValidationUtil();
@@ -23,7 +25,8 @@ public class WalletController {
             System.out.println("4. Transfer");
             System.out.println("5. History");
             System.out.println("6. Change Password");
-            System.out.println("7. Logout");
+            System.out.println("7. User Details");
+            System.out.println("8. Logout");
 
             System.out.print("Choose: ");
             int choice;
@@ -36,7 +39,6 @@ public class WalletController {
 
             switch (choice) {
                 case 1 -> System.out.println("Balance: " + walletService.getBalance());
-
                 case 2 -> {
                     double depositAmount = validationUtil.validateAmount("Amount to deposit: ");
                     walletService.deposit(depositAmount);
@@ -46,7 +48,6 @@ public class WalletController {
                 case 3 -> {
                     while (true) {
                         double withdrawAmount = validationUtil.validateAmount("Amount to withdraw: ");
-
                         if (walletService.withdraw(withdrawAmount)) {
                             System.out.println("Withdraw successful!");
                             break;
@@ -69,9 +70,10 @@ public class WalletController {
 
                 case 5 -> transactionService.getHistory();
 
-                case 6 -> authController.handleChangePassword();
+                case 6 ->authController.handleChangePassword();
+                case 7-> authService.getUserDetails();
 
-                case 7 -> {
+                case 8 -> {
                     logout = true;
                     System.out.println("Logged out!");
                 }

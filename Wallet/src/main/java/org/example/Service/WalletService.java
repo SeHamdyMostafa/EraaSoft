@@ -32,7 +32,6 @@ public class WalletService {
             System.out.println("Insufficient balance");
             return false;
         }
-
         if (success) {
             transactionService.addTransaction(
                     "Withdraw",
@@ -52,29 +51,23 @@ public class WalletService {
             System.out.println("You cannot transfer to yourself!");
             return false;
         }
-
         User receiver = dataStore.getUsers()
                 .stream()
                 .filter(u -> u.getPhone().equals(receiverPhone))
                 .findFirst()
                 .orElse(null);
-
-
         if (receiver == null) {
             System.out.println("Receiver not found!");
             return false;
         }
-
         if (amount > dataStore.getCurrentUser().get().getWallet().getBalance()) {
             System.out.println("Insufficient balance");
             return false;
         }
-
         boolean success = dataStore.getCurrentUser()
                 .get()
                 .getWallet()
                 .transfer(receiver.getWallet(), amount);
-
         if (success) {
             transactionService.addTransaction(
                     "Transfer",

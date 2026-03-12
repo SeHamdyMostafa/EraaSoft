@@ -4,11 +4,13 @@ import org.example.Model.User;
 import org.example.Model.Wallet;
 import org.example.Storage.DataStore;
 
+import java.util.Optional;
+
 public class AuthService {
 
 
     private DataStore dataStore = DataStore.getInstance();
-    public boolean register(String name, String phone, String password) {
+    public boolean register(String name, String phone, String password,int age) {
 
         boolean nameExists = dataStore.getUsers().stream()
                 .anyMatch(user -> user.getName().equalsIgnoreCase(name));
@@ -30,6 +32,7 @@ public class AuthService {
         newUser.setName(name);
         newUser.setPhone(phone);
         newUser.setPassword(password);
+        newUser.setAge(age);
         newUser.setWallet(new Wallet());
         dataStore.addUser(newUser);
 
@@ -64,6 +67,16 @@ public class AuthService {
                     System.out.println("No user is currently logged in!");
                     return false;
                 });
+    }
+
+    public void getUserDetails() {
+
+        dataStore.getCurrentUser().ifPresent(user -> {
+            System.out.println("Name is " + user.getName());
+            System.out.println("Age is " + user.getAge());
+            System.out.println("Phone number is " + user.getPhone());
+            System.out.println("Balance is " + user.getWallet().getBalance());
+        });
     }
 
 }

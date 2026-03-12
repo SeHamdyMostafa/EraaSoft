@@ -5,6 +5,16 @@ public class User {
     private String Name;
     private String Phone;
     private String Password;
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    private int age;
     private Wallet wallet;
 
     public Wallet getWallet() {

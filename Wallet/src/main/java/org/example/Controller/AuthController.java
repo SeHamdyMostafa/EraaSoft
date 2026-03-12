@@ -10,9 +10,10 @@ public class AuthController {
     public void handleRegister() {
         while (true) {
             String name = validationUtil.validateUsername();
+            int age = validationUtil.validateAge();
             String phone = validationUtil.validatePhone();
-            String password = validationUtil.validatePassword("Enter Your Password");
-            boolean registered = authService.register(name, phone, password);
+            String password = validationUtil.validatePassword("Enter Your Password: ");
+            boolean registered = authService.register(name, phone, password,age);
             if (registered) {
                 break;
             } else {
@@ -29,7 +30,7 @@ public class AuthController {
 
         while (attempts < MAX_ATTEMPTS) {
             String phone = validationUtil.validatePhone();
-            String password = validationUtil.validatePassword("Enter Your Password");
+            String password = validationUtil.validatePassword("Enter Your Password: ");
 
             if (authService.login(phone, password)) {
                 System.out.println("Login successful!");
