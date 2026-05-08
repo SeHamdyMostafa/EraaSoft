@@ -1,0 +1,172 @@
+Search about the difference between using PRIMARY KEY and using NOT NULL UNIQUE ?
+
+PRIMARY KEY
+-----------------------
+It is the main identity of the table
+Does NOT allow NULL values
+Does NOT allow duplicate values
+Only one PRIMARY KEY is allowed per table
+Used for relationships between tables (Foreign Key)
+
+---- It is used when the column is the main ID of the table (e.g., director_id)
+
+NOT NULL UNIQUE
+-----------------------
+Does NOT allow NULL values
+Does NOT allow duplicate values
+It is NOT the main identity of the table
+More than one UNIQUE column can exist in a table
+
+---- It is used when the value must be unique but is not the main ID (e.g., email or national_id)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Search about One-to-One Relationship ?
+
+One-to-One Relationship
+-------------------------
+
+-- Definition : Each record in one table is associated with exactly one record in another table.
+
+-- Example:
+          - Person ↔ Passport
+            Each person has only one passport, and each passport belongs to only one person.
+
+-- How it is implemented in databases ?
+     We use a Foreign Key (JOIN COLUMN) placed in one of the two tables.
+
+
+-- Where to place the JOIN COLUMN (Foreign Key)?
+
+Case 1: Place it in the first table
+
+Use this when:
+- The first table is the main entity
+- The second table depends on it
+
+CREATE TABLE person (
+    person_id NUMBER PRIMARY KEY,
+    name VARCHAR2(50)
+);
+
+CREATE TABLE passport (
+    passport_id NUMBER PRIMARY KEY,
+    person_id NUMBER UNIQUE,
+    passport_number VARCHAR2(50),
+    CONSTRAINT fk_person FOREIGN KEY (person_id)
+    REFERENCES person(person_id)
+);
+
+
+Case 2: Place it in the second table
+
+Use this when:
+- The second table is the dependent one
+- The relationship direction is reversed in design
+
+CREATE TABLE department (
+    dept_id NUMBER PRIMARY KEY,
+    dept_name VARCHAR2(50)
+);
+CREATE TABLE employee (
+    emp_id NUMBER PRIMARY KEY,
+    emp_name VARCHAR2(50),
+    dept_id NUMBER,
+    
+    CONSTRAINT fk_dept 
+    FOREIGN KEY (dept_id)
+    REFERENCES department(dept_id)
+);
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Apply Many-to-Many Relationship on Java Level ?
+
+Many-to-Many Relationship 
+-------------------------
+-- Definition : Each record in the first entity can relate to many records in the second entity, and vice versa.
+
+Example:
+       - Student ↔ Course
+         A student can enroll in many courses, and a course can have many students.
+
+-- Core Idea
+You cannot connect two tables directly in M2M
+You MUST break it into two One-to-Many relationships.
+
+Example IN DB:
+
+CREATE TABLE student (
+    student_id NUMBER PRIMARY KEY,
+    name VARCHAR2(50)
+);
+CREATE TABLE course (
+    course_id NUMBER PRIMARY KEY,
+    title VARCHAR2(50)
+);
+CREATE TABLE student_course (
+    student_id NUMBER,
+    course_id NUMBER,
+
+    CONSTRAINT fk_student
+    FOREIGN KEY (student_id)
+    REFERENCES student(student_id),
+
+    CONSTRAINT fk_course
+    FOREIGN KEY (course_id)
+    REFERENCES course(course_id),
+
+    CONSTRAINT pk_student_course
+    PRIMARY KEY (student_id, course_id)
+);
+
+
+Example BY using JPA:
+
+1. Student Entity
+
+import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "student")
+public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+        name = "student_course",
+        joinColumns = @JoinColumn(name = "student_id"),
+        inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
+    private Set<Course> courses = new HashSet<>();
+
+    // getters & setters
+}
+
+
+2. Course Entity
+
+import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "course")
+public class Course {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+
+    @ManyToMany(mappedBy = "courses")
+    private Set<Student> students = new HashSet<>();
+
+    // getters & setters
+}
+

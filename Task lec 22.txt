@@ -1,0 +1,21 @@
+PRIMARY KEY
+-----------------------
+It is the main identity of the table
+Does NOT allow NULL values
+Does NOT allow duplicate values
+Only one PRIMARY KEY is allowed per table
+Used for relationships between tables (Foreign Key)
+
+---- It is used when the column is the main ID of the table (e.g., director_id)
+
+NOT NULL UNIQUE
+-----------------------
+Does NOT allow NULL values
+Does NOT allow duplicate values
+It is NOT the main identity of the table
+More than one UNIQUE column can exist in a table
+
+---- It is used when the value must be unique but is not the main ID (e.g., email or national_id)
+
+
+
