@@ -1,0 +1,35 @@
+Difference between DROP CONSTRAINT and DISABLE CONSTRAINT
+
+1. DROP CONSTRAINT
+Permanently removes a constraint from a table.
+The constraint no longer exists in the database.
+
+When to use:
+
+When the rule is no longer needed.
+
+Example:
+
+ALTER TABLE students
+DROP CONSTRAINT fk_students_department;
+
+2. DISABLE CONSTRAINT
+Temporarily turns off a constraint.
+The constraint still exists but is not enforced.
+It can be enabled again later.
+
+When to use:
+
+During bulk data import.
+For performance improvement in large operations.
+
+
+Example:
+
+ALTER TABLE students
+DISABLE CONSTRAINT fk_students_department;
+
+To re-enable:
+
+ALTER TABLE students
+ENABLE CONSTRAINT fk_students_department;
