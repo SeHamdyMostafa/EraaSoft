@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+
+         version="3.1">
+
+
+  <!-- Start Page -->
+  <welcome-file-list>
+    <welcome-file>auth</welcome-file>
+  </welcome-file-list>
+
+
+  <!-- Auth Servlet -->
+  <servlet>
+
+    <servlet-name>AuthServlet</servlet-name>
+    <servlet-class>
+      org.item.servlets.AuthServlet
+    </servlet-class>
+
+  </servlet>
+
+  <servlet-mapping>
+
+    <servlet-name>AuthServlet</servlet-name>
+
+    <url-pattern>/auth</url-pattern>
+
+  </servlet-mapping>
+
+
+  <!-- Item Servlet -->
+  <servlet>
+
+    <servlet-name>ItemServlet</servlet-name>
+
+    <servlet-class>
+      org.item.servlets.ItemServlet
+    </servlet-class>
+
+  </servlet>
+
+
+  <servlet-mapping>
+
+    <servlet-name>ItemServlet</servlet-name>
+    <url-pattern>/items</url-pattern>
+
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>itemDetailsServlet</servlet-name>
+    <servlet-class>org.item.servlets.itemDetailsServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>itemDetailsServlet</servlet-name>
+    <url-pattern>/item-details</url-pattern>
+  </servlet-mapping>
+
+</web-app>

@@ -1,16 +1,48 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="org.student.models.StudentModel" %>
+<%@ page import="java.util.List" %>
+<%@ page import="org.item.models.ItemModel" %>
 
 <%
-    StudentModel s =
-            (StudentModel) request.getAttribute("student");
+    ItemModel item = (ItemModel) request.getAttribute("item");
+
+    if (item == null) {
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Item Not Found</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5 text-center">
+
+    <div class="alert alert-danger">
+        Item not found or invalid request
+    </div>
+
+    <a href="items" class="btn btn-primary">
+        Back to Items
+    </a>
+
+</div>
+
+</body>
+</html>
+
+<%
+        return;
+    }
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
 
-    <title>Edit Student</title>
+    <title>Edit Item</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
@@ -37,7 +69,6 @@
             padding: 10px;
         }
 
-        /* زرار الحفظ */
         .btn-success {
             padding: 10px 25px;
             border-radius: 12px;
@@ -51,7 +82,6 @@
             color: #198754;
         }
 
-        /* زر الرجوع */
         .btn-secondary {
             padding: 10px 25px;
             border-radius: 12px;
@@ -76,16 +106,30 @@
     <div class="card shadow p-4">
 
         <h2 class="mb-4 text-center">
-            ✏ Edit Student
+            ✏ Edit Item
         </h2>
 
-        <form method="post" action="students">
+        <%
+            List<String> errors = (List<String>) request.getAttribute("errors");
+
+            if (errors != null) {
+                for (String e : errors) {
+        %>
+
+        <div class="alert alert-danger">
+            <%= e %>
+        </div>
+
+        <%
+                }
+            }
+        %>
+
+        <form method="post" action="items">
 
             <input type="hidden" name="action" value="update">
 
-            <input type="hidden"
-                   name="id"
-                   value="<%= s.getId() %>">
+            <input type="hidden" name="id" value="<%= item.getId() %>">
 
             <div class="mb-3">
 
@@ -94,19 +138,20 @@
                 <input type="text"
                        name="name"
                        class="form-control"
-                       value="<%= s.getName() %>"
+                       value="<%= item.getName() %>"
                        required>
 
             </div>
 
             <div class="mb-3">
 
-                <label class="form-label fw-bold">Age</label>
+                <label class="form-label fw-bold">Price</label>
 
                 <input type="number"
-                       name="age"
+                       step="0.01"
+                       name="price"
                        class="form-control"
-                       value="<%= s.getAge() %>"
+                       value="<%= item.getPrice() %>"
                        required>
 
             </div>
@@ -117,8 +162,7 @@
                     Save Changes
                 </button>
 
-                <a href="students"
-                   class="btn btn-secondary w-50">
+                <a href="items" class="btn btn-secondary w-50">
                     Back
                 </a>
 
