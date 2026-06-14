@@ -1,0 +1,35 @@
+CREATE USER hamdy
+IDENTIFIED BY hamdy123;
+
+GRANT CREATE SESSION TO hamdy;
+GRANT CREATE TABLE TO hamdy;
+
+CREATE TABLE student
+(
+    id NUMBER PRIMARY KEY,
+    name VARCHAR2(50)
+);
+
+
+INSERT INTO student VALUES (1,'Ahmed');
+INSERT INTO student VALUES (2,'Ali');
+
+COMMIT;
+
+
+SELECT * FROM student;
+
+
+UPDATE student
+SET name='Mohamed'
+WHERE id=1;
+
+COMMIT;
+
+DELETE FROM student
+WHERE id=2;
+
+COMMIT;
+
+REVOKE CREATE TABLE FROM hamdy;
+REVOKE CREATE SESSION FROM hamdy;
