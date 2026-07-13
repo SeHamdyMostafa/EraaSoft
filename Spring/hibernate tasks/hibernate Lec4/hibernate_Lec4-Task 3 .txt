@@ -1,0 +1,22 @@
+| Tables                | Hibernate Relationship                               |
+| --------------------- | ---------------------------------------------------- |
+| Student - Passport    | `@OneToOne`                                          |
+| Employee - Department | `@ManyToOne` (Department → Employees = `@OneToMany`) |
+| Customer - Order      | `@OneToMany`                                         |
+| Book - Author         | `@ManyToMany`                                        |
+| Teacher - Subject     | `@OneToMany`                                         |
+| User - Role           | `@ManyToMany`                                        |
+| Course - Student      | `@ManyToMany`                                        |
+| Library - Book        | `@OneToMany`                                         |
+| Doctor - Patient      | `@OneToMany`                                         |
+| Product - Category    | `@ManyToOne` (Category → Products = `@OneToMany`)    |
+| Project - Employee    | `@ManyToMany`                                        |
+| Invoice - Payment     | `@OneToOne`                                          |
+| Flight - Ticket       | `@OneToMany`                                         |
+| Movie - Actor         | `@ManyToMany`                                        |
+| Parent - Child        | `@OneToMany`                                         |
+| School - Classroom    | `@OneToMany`                                         |
+| Driver - Car          | `@OneToOne`                                          |
+| Hotel - Room          | `@OneToMany`                                         |
+| Account - Transaction | `@OneToMany`                                         |
+| Country - City        | `@OneToMany`                                         |
