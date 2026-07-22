@@ -101,4 +101,19 @@ public class EmployeeServiceImp implements EmployeeService {
         return employeeRepo.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Employee Not Found"));
     }
+
+    @Override
+    public List<Employee> searchByNameFunction(String name) {
+        return employeeRepo.findByNameStartingWith(name);
+    }
+
+    @Override
+    public List<Employee> searchByNameJPQL(String name) {
+        return employeeRepo.searchByNameJPQL(name);
+    }
+
+    @Override
+    public List<Employee> searchByNameNative(String name) {
+        return employeeRepo.searchByNameNative(name);
+    }
 }

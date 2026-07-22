@@ -83,4 +83,22 @@ public class EmployeeController {
     public Employee getEmployeeByName(@PathVariable String name) {
         return employeeService.getEmployeeByName(name);
     }
+
+    //  http://localhost:8080/employees/search/function?name=Ahmed
+    @GetMapping("/employees/search/function")
+    public List<Employee> searchByFunction(@RequestParam String name) {
+        return employeeService.searchByNameFunction(name);
+    }
+
+    //  http://localhost:8080/employees/search/jpql?name=Ahmed
+    @GetMapping("/employees/search/jpql")
+    public List<Employee> searchByJPQL(@RequestParam String name) {
+        return employeeService.searchByNameJPQL(name);
+    }
+
+    //  http://localhost:8080/employees/search/native?name=Ahmed
+    @GetMapping("/employees/search/native")
+    public List<Employee> searchByNative(@RequestParam String name) {
+        return employeeService.searchByNameNative(name);
+    }
 }

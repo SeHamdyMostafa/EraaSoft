@@ -28,5 +28,11 @@ public interface EmployeeService {
 
      Employee getEmployeeByName(String name);
 
+     List<Employee> searchByNameFunction(String name);
+
+     List<Employee> searchByNameJPQL(String name);
+
+     List<Employee> searchByNameNative(String name);
+
 
 }
