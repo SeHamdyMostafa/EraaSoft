@@ -1,5 +1,6 @@
 package com.spring.boot.service;
 
+import com.spring.boot.Dto.EmployeeDto;
 import com.spring.boot.model.Employee;
 import com.spring.boot.repo.EmployeeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import java.util.List;
 @Service
 public class EmployeeServiceImp implements EmployeeService {
 
-    private EmployeeRepo employeeRepo;
+    private final EmployeeRepo employeeRepo;
 
     @Autowired
     public EmployeeServiceImp(EmployeeRepo employeeRepo) {
@@ -18,64 +19,92 @@ public class EmployeeServiceImp implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getEmployees() {
-        return employeeRepo.findAll();
+    public List<EmployeeDto> getEmployees() {
+        return employeeRepo.findAll()
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     @Override
-    public List<Employee> getEmployeesByIDs(List<Long> ids) {
-        return employeeRepo.findAllById(ids);
+    public List<EmployeeDto> getEmployeesByIDs(List<Long> ids) {
+        return employeeRepo.findAllById(ids)
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     @Override
-    public Employee getEmployeeByID(Long id) {
-        return employeeRepo.findById(id)
+    public EmployeeDto getEmployeeByID(Long id) {
+
+        Employee employee = employeeRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee Not Found"));
+        return toDTO(employee);
     }
 
     @Override
-    public Employee addEmployee(Employee employee) {
+    public EmployeeDto addEmployee(EmployeeDto employeeDto) {
+
+        Employee employee = toEntity(employeeDto);
         if (employee.getId() != null) {
             throw new RuntimeException("New Employee should not have ID");
         }
-        return employeeRepo.save(employee);
+
+        return toDTO(employeeRepo.save(employee));
     }
 
     @Override
-    public List<Employee> addEmployees(List<Employee> employees) {
+    public List<EmployeeDto> addEmployees(List<EmployeeDto> employeeDtos) {
+
+        List<Employee> employees = employeeDtos.stream()
+                .map(this::toEntity)
+                .toList();
+
         if (employees.stream().anyMatch(employee -> employee.getId() != null)) {
             throw new RuntimeException("New Employee should not have ID");
         }
-        return employeeRepo.saveAll(employees);
+
+        return employeeRepo.saveAll(employees)
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
-
     @Override
-    public Employee modifyEmployee(Employee employee) {
+    public EmployeeDto modifyEmployee(EmployeeDto employeeDto) {
 
+        Employee employee = toEntity(employeeDto);
         if (employee.getId() == null) {
             throw new RuntimeException("Employee ID is required");
         }
-
-        return employeeRepo.save(employee);
+        return toDTO(employeeRepo.save(employee));
     }
 
     @Override
-    public List<Employee> modifyEmployees(List<Employee> employees) {
-        if (employees.stream().anyMatch(employee -> employee.getId() == null)){
+    public List<EmployeeDto> modifyEmployees(List<EmployeeDto> employeeDtos) {
+
+        List<Employee> employees = employeeDtos.stream()
+                .map(this::toEntity)
+                .toList();
+
+        if (employees.stream().anyMatch(employee -> employee.getId() == null)) {
             throw new RuntimeException("Employee ID is required");
         }
 
-        return employeeRepo.saveAll(employees);
+        return employeeRepo.saveAll(employees)
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     @Override
     public void deleteAllEmployees() {
-         employeeRepo.deleteAll();
+        employeeRepo.deleteAll();
     }
 
     @Override
-    public List<Employee> deleteEmployeesByIDs(List<Long> ids) {
+    public List<EmployeeDto> deleteEmployeesByIDs(List<Long> ids) {
+
         List<Employee> employees = employeeRepo.findAllById(ids);
         if (employees.size() != ids.size()) {
             throw new RuntimeException("One or more Employees Not Found");
@@ -83,7 +112,9 @@ public class EmployeeServiceImp implements EmployeeService {
 
         employeeRepo.deleteAllById(ids);
 
-        return employees;
+        return employees.stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     @Override
@@ -97,23 +128,59 @@ public class EmployeeServiceImp implements EmployeeService {
     }
 
     @Override
-    public Employee getEmployeeByName(String name) {
-        return employeeRepo.findByName(name)
+    public EmployeeDto getEmployeeByName(String name) {
+
+        Employee employee = employeeRepo.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Employee Not Found"));
+
+        return toDTO(employee);
     }
 
     @Override
-    public List<Employee> searchByNameFunction(String name) {
-        return employeeRepo.findByNameStartingWith(name);
+    public List<EmployeeDto> searchByNameFunction(String name) {
+        return employeeRepo.findByNameStartingWith(name)
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     @Override
-    public List<Employee> searchByNameJPQL(String name) {
-        return employeeRepo.searchByNameJPQL(name);
+    public List<EmployeeDto> searchByNameJPQL(String name) {
+        return employeeRepo.searchByNameJPQL(name)
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     @Override
-    public List<Employee> searchByNameNative(String name) {
-        return employeeRepo.searchByNameNative(name);
+    public List<EmployeeDto> searchByNameNative(String name) {
+        return employeeRepo.searchByNameNative(name)
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    private EmployeeDto toDTO(Employee employee) {
+
+        EmployeeDto dto = new EmployeeDto();
+
+        dto.setId(employee.getId());
+        dto.setName(employee.getName());
+        dto.setAge(employee.getAge());
+        dto.setPhoneNumber(employee.getPhoneNumber());
+
+        return dto;
+    }
+
+    private Employee toEntity(EmployeeDto dto) {
+
+        Employee employee = new Employee();
+
+        employee.setId(dto.getId());
+        employee.setName(dto.getName());
+        employee.setAge(dto.getAge());
+        employee.setPhoneNumber(dto.getPhoneNumber());
+
+        return employee;
     }
 }

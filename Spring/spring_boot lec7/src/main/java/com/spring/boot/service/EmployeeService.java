@@ -1,38 +1,39 @@
 package com.spring.boot.service;
 
+import com.spring.boot.Dto.EmployeeDto;
 import com.spring.boot.model.Employee;
 
 import java.util.List;
 
 public interface EmployeeService {
 
-     List<Employee> getEmployees();
+     List<EmployeeDto> getEmployees();
 
-     List<Employee> getEmployeesByIDs(List<Long> ids);
+     List<EmployeeDto> getEmployeesByIDs(List<Long> ids);
 
-     Employee getEmployeeByID(Long id);
+     EmployeeDto getEmployeeByID(Long id);
 
-     Employee addEmployee(Employee employee);
+     EmployeeDto addEmployee(EmployeeDto employeeDto);
 
-     List<Employee>  addEmployees(List<Employee> employees);
+     List<EmployeeDto>  addEmployees(List<EmployeeDto> employeeDtos);
 
-     Employee modifyEmployee(Employee employee);
+     EmployeeDto modifyEmployee(EmployeeDto employeeDto);
 
-     List<Employee> modifyEmployees(List<Employee> employees);
+     List<EmployeeDto> modifyEmployees(List<EmployeeDto> employeeDtos);
 
      void deleteAllEmployees();
 
-     List<Employee> deleteEmployeesByIDs(List<Long> ids);
+     List<EmployeeDto> deleteEmployeesByIDs(List<Long> ids);
 
      void deleteEmployee(Long id);
 
-     Employee getEmployeeByName(String name);
+     EmployeeDto getEmployeeByName(String name);
 
-     List<Employee> searchByNameFunction(String name);
+     List<EmployeeDto> searchByNameFunction(String name);
 
-     List<Employee> searchByNameJPQL(String name);
+     List<EmployeeDto> searchByNameJPQL(String name);
 
-     List<Employee> searchByNameNative(String name);
+     List<EmployeeDto> searchByNameNative(String name);
 
 
 }
