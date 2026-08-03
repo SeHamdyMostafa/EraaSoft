@@ -1,6 +1,7 @@
 package com.spring.boot.service;
 
 import com.spring.boot.Dto.EmployeeDto;
+import com.spring.boot.mapper.EmployeeMapper;
 import com.spring.boot.model.Employee;
 import com.spring.boot.repo.EmployeeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,89 +13,75 @@ import java.util.List;
 public class EmployeeServiceImp implements EmployeeService {
 
     private final EmployeeRepo employeeRepo;
+    private final EmployeeMapper employeeMapper;
 
     @Autowired
-    public EmployeeServiceImp(EmployeeRepo employeeRepo) {
+    public EmployeeServiceImp(EmployeeRepo employeeRepo,
+                              EmployeeMapper employeeMapper) {
         this.employeeRepo = employeeRepo;
+        this.employeeMapper = employeeMapper;
     }
 
     @Override
     public List<EmployeeDto> getEmployees() {
-        return employeeRepo.findAll()
-                .stream()
-                .map(this::toDTO)
-                .toList();
+        return employeeMapper.toDtoList(employeeRepo.findAll());
+
     }
 
     @Override
     public List<EmployeeDto> getEmployeesByIDs(List<Long> ids) {
-        return employeeRepo.findAllById(ids)
-                .stream()
-                .map(this::toDTO)
-                .toList();
+        return employeeMapper.toDtoList(employeeRepo.findAllById(ids));
     }
 
     @Override
     public EmployeeDto getEmployeeByID(Long id) {
 
-        Employee employee = employeeRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee Not Found"));
-        return toDTO(employee);
+        return employeeMapper.toDto(employeeRepo.findById(id).orElseThrow(() -> new RuntimeException("Employee Not Found")));
     }
 
     @Override
     public EmployeeDto addEmployee(EmployeeDto employeeDto) {
 
-        Employee employee = toEntity(employeeDto);
+        Employee employee = employeeMapper.toEntity(employeeDto);
         if (employee.getId() != null) {
             throw new RuntimeException("New Employee should not have ID");
         }
 
-        return toDTO(employeeRepo.save(employee));
+        return employeeMapper.toDto(employeeRepo.save(employee));
     }
 
     @Override
     public List<EmployeeDto> addEmployees(List<EmployeeDto> employeeDtos) {
 
-        List<Employee> employees = employeeDtos.stream()
-                .map(this::toEntity)
-                .toList();
+        List<Employee> employees = employeeMapper.toEntityList(employeeDtos);
 
         if (employees.stream().anyMatch(employee -> employee.getId() != null)) {
             throw new RuntimeException("New Employee should not have ID");
         }
 
-        return employeeRepo.saveAll(employees)
-                .stream()
-                .map(this::toDTO)
-                .toList();
+        return employeeMapper.toDtoList(employeeRepo.saveAll(employees));
     }
 
     @Override
     public EmployeeDto modifyEmployee(EmployeeDto employeeDto) {
 
-        Employee employee = toEntity(employeeDto);
+        Employee employee = employeeMapper.toEntity(employeeDto);
         if (employee.getId() == null) {
             throw new RuntimeException("Employee ID is required");
         }
-        return toDTO(employeeRepo.save(employee));
+        return employeeMapper.toDto(employeeRepo.save(employee));
     }
 
     @Override
     public List<EmployeeDto> modifyEmployees(List<EmployeeDto> employeeDtos) {
 
-        List<Employee> employees = employeeDtos.stream()
-                .map(this::toEntity)
-                .toList();
+        List<Employee> employees = employeeMapper.toEntityList(employeeDtos);
 
         if (employees.stream().anyMatch(employee -> employee.getId() == null)) {
             throw new RuntimeException("Employee ID is required");
         }
 
-        return employeeRepo.saveAll(employees)
-                .stream()
-                .map(this::toDTO)
-                .toList();
+        return employeeMapper.toDtoList(employeeRepo.saveAll(employees));
     }
 
     @Override
@@ -112,9 +99,7 @@ public class EmployeeServiceImp implements EmployeeService {
 
         employeeRepo.deleteAllById(ids);
 
-        return employees.stream()
-                .map(this::toDTO)
-                .toList();
+        return employeeMapper.toDtoList(employees);
     }
 
     @Override
@@ -130,57 +115,24 @@ public class EmployeeServiceImp implements EmployeeService {
     @Override
     public EmployeeDto getEmployeeByName(String name) {
 
-        Employee employee = employeeRepo.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Employee Not Found"));
-
-        return toDTO(employee);
+        return employeeMapper.toDto(employeeRepo.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Employee Not Found")));
     }
 
     @Override
     public List<EmployeeDto> searchByNameFunction(String name) {
-        return employeeRepo.findByNameStartingWith(name)
-                .stream()
-                .map(this::toDTO)
-                .toList();
+        return employeeMapper.toDtoList(employeeRepo.findByNameStartingWith(name));
     }
 
     @Override
     public List<EmployeeDto> searchByNameJPQL(String name) {
-        return employeeRepo.searchByNameJPQL(name)
-                .stream()
-                .map(this::toDTO)
-                .toList();
+        return employeeMapper.toDtoList(employeeRepo.searchByNameJPQL(name));
     }
 
     @Override
     public List<EmployeeDto> searchByNameNative(String name) {
-        return employeeRepo.searchByNameNative(name)
-                .stream()
-                .map(this::toDTO)
-                .toList();
+        return employeeMapper.toDtoList(employeeRepo.searchByNameNative(name));
     }
 
-    private EmployeeDto toDTO(Employee employee) {
 
-        EmployeeDto dto = new EmployeeDto();
-
-        dto.setId(employee.getId());
-        dto.setName(employee.getName());
-        dto.setAge(employee.getAge());
-        dto.setPhoneNumber(employee.getPhoneNumber());
-
-        return dto;
-    }
-
-    private Employee toEntity(EmployeeDto dto) {
-
-        Employee employee = new Employee();
-
-        employee.setId(dto.getId());
-        employee.setName(dto.getName());
-        employee.setAge(dto.getAge());
-        employee.setPhoneNumber(dto.getPhoneNumber());
-
-        return employee;
-    }
 }

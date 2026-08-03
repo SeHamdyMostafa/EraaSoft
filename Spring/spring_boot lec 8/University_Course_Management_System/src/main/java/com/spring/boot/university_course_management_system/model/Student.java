@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -19,9 +21,7 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
     @Column(unique = true)
     private String email;
 
@@ -29,7 +29,8 @@ public class Student {
     @JoinTable(
             name = "student_course",
             joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id")
+            inverseJoinColumns = @JoinColumn(name = "course_id"),
+    uniqueConstraints = @UniqueConstraint(columnNames = {"student_id", "course_id"})
+
     )
-    private List<Course> courses = new ArrayList<>();
-}
+    private Set<Course> courses = new HashSet<>();}
