@@ -84,7 +84,7 @@ public class PostServiceImp implements PostService {
 
     @Override
     public List<PostWithUsersDto> getAllPostsWithUsers() {
-        return postMapper.toPostWithUsersDtoList(postRepo.findAll());
+        return postMapper.toPostWithUsersDtoList(postRepo.findAllWithUser());
     }
 
     @Override

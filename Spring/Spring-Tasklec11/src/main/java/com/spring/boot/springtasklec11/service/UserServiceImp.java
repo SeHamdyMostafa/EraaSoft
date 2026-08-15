@@ -28,7 +28,7 @@ public class UserServiceImp implements UserService {
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
         User user=userMapper.toUserRequestEntity(userRequestDTO);
         if (user.getId()!=null){
-            throw new RuntimeException("user not found ");
+            throw new RuntimeException("New user should not have an ID");
         }
         return userMapper.toUserResponseDTO(userRepo.save(user));
     }
@@ -46,11 +46,14 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
-        User user=userMapper.toUserRequestEntity(userRequestDTO);
-        if (user.getId()==null){
-            throw new RuntimeException("user not found ");
-        }
-        return userMapper.toUserResponseDTO(userRepo.save(user));
+        User existingUser = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        existingUser.setName(userRequestDTO.getName());
+        existingUser.setAge(userRequestDTO.getAge());
+        existingUser.setPassword(userRequestDTO.getPassword());
+
+        return userMapper.toUserResponseDTO(userRepo.save(existingUser));
     }
 
     @Override
@@ -62,7 +65,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public List<UserWithPostsDto> getAllUsersWithPosts() {
-        return userMapper.toUserWithPostsDtoList(userRepo.findAll());
+        return userMapper.toUserWithPostsDtoList(userRepo.findAllWithPosts());
     }
 
     @Override

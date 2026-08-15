@@ -2,6 +2,7 @@ package com.spring.boot.springtasklec11.repo;
 
 import com.spring.boot.springtasklec11.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,5 +11,7 @@ import java.util.List;
 public interface PostRepo extends JpaRepository<Post, Long> {
 
     List<Post> findByUserIdIn(List<Long> userIds);
+    @Query("SELECT p FROM Post p LEFT JOIN FETCH p.user")
+    List<Post> findAllWithUser();
 
 }
